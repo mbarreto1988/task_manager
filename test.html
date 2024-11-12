@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Siri</title>
+</head>
+<style>
+    * {
+        padding: 0px;
+        margin: 0px;
+        font-family: Century Gothic;
+    }
+
+    body {
+        background-color: #ededed;
+    }
+
+    div {
+        padding: 30px;
+        background-color: #fff;
+        margin: 50px;
+    }
+
+    input {
+        padding: 9px;
+        font-size: 18px;
+        border: solid 1px #aaa;
+        width: 80%
+    }
+    input[type="button"] {
+        width: 15%
+    }
+    .decir-boton {
+        cursor: pointer;
+    }
+</style>
+<body>
+    <div>
+        <input type="text" id="texto" placeholder="Escribe algo aquí">
+        <input type="button" id="hablar" value="Decir" class="decir-boton">
+    </div>
+
+    <a href="./index.html">ir a Index</a>
+    <script>
+        let voices = [];
+        window.speechSynthesis.onvoiceschanged = () => {
+            voices = window.speechSynthesis.getVoices();
+            console.log("Voces cargadas:", voices);
+        };
+        
+        document.getElementById('hablar').addEventListener("click", () => {
+            const texto = document.getElementById("texto").value;
+            console.log("Texto a decir:", texto); 
+            decir(texto);
+        });
+    
+        function decir(texto) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                
+                const speech = new SpeechSynthesisUtterance(texto);
+                speech.lang = "es-ES";
+                speech.volume = 1; 
+                speech.rate = 1;  
+                speech.pitch = 1; 
+                
+                const spanishVoice = voices.find(voice => voice.lang === "es-ES" || voice.lang === "es_ES");
+                if (spanishVoice) {
+                    speech.voice = spanishVoice;
+                    console.log("Usando voz:", spanishVoice);
+                }
+                
+                if (!window.speechSynthesis.speaking) {
+                    window.speechSynthesis.speak(speech);
+                }
+            } else {
+                console.error("Speech Synthesis no está soportado en este navegador.");
+            }
+        }
+
+    </script>
+    
+</body>
+</html>

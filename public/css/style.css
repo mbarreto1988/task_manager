@@ -1,0 +1,379 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f3f3f3;
+}
+
+.container {
+    width: 300px;
+    max-height: 80vh; /* Limita la altura máxima al 80% de la pantalla */
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    display: flex;
+    flex-direction: column; /* Para que los elementos internos se organicen en columna */
+}
+
+
+/*----------------------------------------- Barra de navegación */
+.navbar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 10px;
+}
+
+/*----------------------------------------- menu hamburguesa */
+.menuButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 13%;
+    color: #090909;
+    width: 2.5em;
+    height: 2.5em;
+    border-radius: 0.5em;
+    background: #e8e8e8;
+    border: 1px solid #e8e8e8;
+    transition: all .3s;
+    box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.menuButton:hover {
+    border: 1px solid white;
+}
+
+.menuButton:active {
+    color: #666;
+    box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
+}
+
+input[type = "checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    display: none;
+    visibility: hidden;
+}
+
+.menuButton span {
+    width: 30px;
+    height: 4px;
+    background: #555151;
+    border-radius: 100px;
+    transition: 0.3s ease;
+}
+
+input[type]:checked ~ span.top {
+    transform: translateY(290%)rotate(45deg);
+    width: 40px;
+}
+
+input[type]:checked ~ span.bot {
+    transform: translateY(-270%) rotate(-45deg);
+    width: 40px;
+    box-shadow: 0 0 10px #495057;
+}
+
+input[type]:checked ~ span.mid {
+    transform: translateX(-20px);
+    opacity: 0;
+}
+
+.task-section {
+    position: relative;
+    border: 1px solid #afa6a6;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.fullscreen-menu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 10;
+    border-radius: 9px;
+}
+
+.fullscreen-menu ul {
+    list-style-type: none;
+    text-align: left;
+    padding: 0;
+    width: 80%;
+}
+
+.fullscreen-menu ul li {
+    margin: 35px 0;
+}
+
+.fullscreen-menu ul li a {
+    color: #fff;
+    font-size: 12px;
+    text-decoration: none;
+    transition: color 0.5s;
+    display: block;
+}
+.fullscreen-menu ul:hover li a {
+    color: #7c8c8d;
+}
+
+.fullscreen-menu ul li a:hover {
+    transform: translateX(10px);
+    color: rgb(255, 255, 255);
+    font-size: 13px;
+    transition: color 0.5s;
+}
+
+.fullscreen-menu ul li a:hover::before {
+    width: 100%;
+}
+
+input[type="checkbox"]:checked ~ .task-section .fullscreen-menu {
+    opacity: 1;
+    visibility: visible;
+    border-radius: 20px;
+}
+
+/*----------------------------------------- titulo */
+
+.navbar h1 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    display: flex;
+}
+
+.titulo {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    text-decoration: none;
+}
+
+.titulo:hover {
+    color: #928484;
+    transition: 0.3s ease;
+}
+
+
+/*----------------------------------------- Tarjetas de tareas */
+.task {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+}
+
+.task.completed {
+    background-color: #eee;
+    color: #999;
+}
+
+.task h3 {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.task .date {
+    font-size: 12px;
+    color: #777;
+}
+
+.task-container {
+    flex: 1; /* Ocupa todo el espacio disponible dentro del .container */
+    overflow-y: auto; /* Activa el scroll solo en este contenedor */
+    padding-right: 10px;
+    scrollbar-color: rgb(64, 172, 240) rgb(131, 243, 194); /* Color de la barra de desplazamiento */
+    scrollbar-width: thin;
+    max-height: calc(70vh - 100px); /* Ajusta esta altura según el espacio que ocupen el header y el footer */
+}
+
+.task-container::-webkit-scrollbar-thumb {
+    background-color: blue;
+    border-radius: 4px;
+}
+
+.task-container::-webkit-scrollbar-thumb:hover {
+    background-color: darkblue;
+}
+/*----------------------------------------- Iconos de acciones */
+.icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+}
+
+.task-icon {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.task-icon i {
+    font-size: 1.5em;
+}
+
+
+.play-icon {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.process-icon {
+    background-color: #1ac826;
+    color: #fff;
+}
+
+.check-icon {
+    background-color: #ccc;
+    color: #999;
+}
+
+/*----------------------------------------- footer */
+footer {
+    text-align: center;
+    padding: 15px 0;
+    font-size: 14px;
+    color: #777;
+    border-top: 1px solid #ddd;
+    margin-top: 20px;
+}
+
+footer h2 {
+    font-size: 14px;
+    color: #555;
+    font-weight: normal;
+}
+
+.navbar, footer {
+    flex-shrink: 0; /* No se colapsan */
+}
+
+
+.task-dialog {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%; /* Ajusta el tamaño según sea necesario */
+    max-width: 280px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #cac4c4;
+    z-index: 10;
+    border: 3px double rgb(78, 78, 78);
+}
+
+.task-dialog form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.task-dialog h2 {
+    text-align: center;
+}
+
+#closeDialogButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center; /* Centra los botones horizontalmente */
+    gap: 10px; /* Espacio entre los botones */
+    margin-top: 10px;
+}
+
+.button-group button {
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    min-width: 80px; /* Ajusta según el tamaño deseado */
+}
+
+.button-group button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#cancelDialogButton {
+    background-color: #f44336;
+    color: white;
+}
+
+.task-dialog input, 
+.task-dialog textarea, 
+.task-dialog select {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.task-dialog button {
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.task-dialog button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#cancelDialogButton {
+    background-color: #f44336;
+    color: white;
+}
