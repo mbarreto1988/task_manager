@@ -1,5 +1,6 @@
 import Api from './api.js';
 import TaskController from './taskController.js';
+import { initializeVoiceConfig } from './voiceConfig.js';
 
 document.addEventListener("DOMContentLoaded", () => {
     const taskContainer = document.getElementById("api-data");
@@ -8,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Cargar y mostrar las tareas al cargar la página
     taskController.loadTasks();
+    initializeVoiceConfig();
     
     // Configuración del menú de pantalla completa
     const menuButton = document.getElementById("menuButtonId");
@@ -139,4 +141,27 @@ document.addEventListener("DOMContentLoaded", () => {
         await taskController.deleteTask(selectedTaskId);
         deleteTaskDialog.close();
     });
+
+    const closeTaskDialogButton = document.getElementById("closeTaskDialogButton");
+    const taskDialog = document.getElementById("taskDialog");
+
+    closeTaskDialogButton.addEventListener("click", () => {
+        taskDialog.close();
+    });
+
+    // Obtener elementos
+    const configureAppButton = document.getElementById("configureApp");
+    const configureVoiceDialog = document.getElementById("configureVoiceDialog");
+    const closeConfigureVoiceDialog = document.getElementById("closeConfigureVoiceDialog");
+
+    // Abrir el diálogo de configuración de voz
+    configureAppButton.addEventListener("click", () => {
+        configureVoiceDialog.showModal();
+    });
+
+    // Cerrar el diálogo de configuración de voz
+    closeConfigureVoiceDialog.addEventListener("click", () => {
+        configureVoiceDialog.close();
+    });
+
 });

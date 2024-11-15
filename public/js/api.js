@@ -32,6 +32,12 @@ class Api {
             return null;
         }
     }
+
+    async fetchTaskById(taskId) {
+        const response = await fetch(`${this.apiURL}/${taskId}`);
+        return response.ok ? response.json() : null;
+    }
+    
 }
 
 export default Api;

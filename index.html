@@ -100,16 +100,35 @@
                         </div>
                     </form>
                 </dialog>
+
+                <dialog id="taskDialog" class="task-dialog">
+                    <div id="taskDialogContent"></div>
+                    <button id="closeTaskDialogButton">Cerrar</button>
+                </dialog>
                 
+                <dialog id="configureVoiceDialog" class="task-dialog">
+                    <h2>Configurar Voz</h2>
+                    <textarea id="voiceTextToSpeak" placeholder="Escribe el texto que quieres que se hable"></textarea>
+                    <p id="labelInputRate">Velocidad de reproducción: 1</p>
+                    <input type="range" id="voiceInputRate" min="0.5" max="2" value="1" step="0.1">
+                    <select id="voiceSelectVoice">
+                        <option value="es-MX">Español México</option>
+                        <option value="es-US">Español USA</option>
+                        <option value="en-GB">Inglés británico</option>
+                        <option value="en-US">Inglés norteamericano</option>
+                        <option value="it-IT">Italiano</option>
+                        <option value="pt-BR">Portugués de Brasil</option>
+                        <option value="fr-FR">Francés</option>
+                    </select>
+                    <button id="playConfiguredVoice">Escuchar</button>
+                    <button id="closeConfigureVoiceDialog">Cerrar</button>
+                </dialog>
 
             </div>
         </main>
 
         <footer>
-            <h2>Footer</h2>
-            <a href="./example.html" style="text-decoration: none; color: red;">ir a example</a>
-            <br>
-            <a href="./test.html" style="text-decoration: none; color: red;">ir a test</a>
+            <h2>Footer todos los derechos reservados</h2>
         </footer>
     </div>
 

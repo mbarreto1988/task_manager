@@ -1,107 +1,102 @@
 import Api from './api.js';
+import { voiceSettings } from './voiceConfig.js'; // Importamos las configuraciones globales
 
 class TaskController {
     constructor(container) {
         this.container = container;
-        this.api = new Api(); // Instancia de la clase Api
-
-        // Inicializar la API de síntesis de voz en un evento de interacción, si es posible
-        window.addEventListener('click', () => {
-            this.initializeSpeech();
-        }, { once: true });
-    }
-
-    initializeSpeech() {
-        if ('speechSynthesis' in window) {
-            const initSpeech = new SpeechSynthesisUtterance('');
-            window.speechSynthesis.speak(initSpeech);
-        }
+        this.api = new Api();
+        this.taskDialog = document.getElementById("taskDialog");
+        this.taskDialogContent = document.getElementById("taskDialogContent");
     }
 
     async loadTasks() {
-        const tasks = await this.api.fetchTasks(); // Usa el método fetchTasks de Api
+        const tasks = await this.api.fetchTasks();
         this.displayTasks(tasks);
         return tasks;
     }
 
     async createTask(task) {
-        const newTask = await this.api.createTask(task); // Usa el método createTask de Api
+        const newTask = await this.api.createTask(task);
         if (newTask) {
-            this.loadTasks(); // Recargar la lista de tareas después de crear una nueva
+            this.loadTasks();
         }
     }
 
     displayTasks(tasks) {
-        // Ordenar las tareas por estado y fecha
         const orderedTasks = tasks.sort((a, b) => {
-            const estadoOrder = {
-                "En Proceso": 1,
-                "Pendiente": 2,
-                "Finalizada": 3
-            };
-
+            const estadoOrder = { "En Proceso": 1, "Pendiente": 2, "Finalizada": 3 };
             if (estadoOrder[a.estado] !== estadoOrder[b.estado]) {
                 return estadoOrder[a.estado] - estadoOrder[b.estado];
             }
-
             const fechaA = new Date(a.fechaCreacion);
             const fechaB = new Date(b.fechaCreacion);
             return fechaB - fechaA;
         });
 
         this.container.innerHTML = "";
-        
+
         orderedTasks.forEach(task => {
-            let iconClass, iconHtml, taskClass;
-            
-            if (task.estado === "Finalizada") {
-                iconClass = "check-icon";
-                iconHtml = '<i class="fa-solid fa-circle-check"></i>';
-                taskClass = "task completed";
-            } else if (task.estado === "En Proceso") {
-                iconClass = "process-icon";
-                iconHtml = '<i class="fa-solid fa-circle-play"></i>';
-                taskClass = "task in-process";
-            } else { 
-                iconClass = "play-icon";
-                iconHtml = '<i class="fa-solid fa-circle-play"></i>';
-                taskClass = "task";
-            }
-            
             const taskHtml = `
-                <div class="${taskClass}">
+                <div class="task ${task.estado === "Finalizada" ? "completed" : ""}" data-id="${task.id}">
                     <div>
                         <h3 class="task-title">${task.titulo}</h3>
                         <p class="date task-date">${task.fechaCreacion}</p>
                         <p class="date task-status">${task.estado}</p>
                     </div>
-                    <button class="icon task-icon ${iconClass}" data-description="${task.descripcion}" id="button-play">
-                        ${iconHtml}
+                    <button class="icon task-icon play-icon" data-description="${task.descripcion}">
+                        <i class="fa-solid fa-circle-play"></i>
                     </button>
                 </div>
             `;
-            
             this.container.insertAdjacentHTML("beforeend", taskHtml);
         });
-        
+
+        this.addTaskClickEvents();
         this.addIconClickEvents();
     }
 
-    async updateTaskStatus(taskId, newStatus) {
-        try {
-            const response = await fetch(`${this.api.apiURL}/${taskId}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ estado: newStatus })
+    addTaskClickEvents() {
+        const tasks = this.container.querySelectorAll(".task");
+        tasks.forEach(task => {
+            task.addEventListener("click", async () => {
+                const taskId = task.getAttribute("data-id");
+                const taskData = await this.api.fetchTaskById(taskId);
+                this.showTaskDialog(taskData);
             });
-            if (!response.ok) throw new Error("Error al actualizar el estado");
+        });
+    }
 
-            // Recargar las tareas después de la actualización
+    showTaskDialog(task) {
+        this.taskDialogContent.innerHTML = `
+            <p><strong>Fecha de creación:</strong> ${task.fechaCreacion}</p>
+            <p><strong>Título:</strong> ${task.titulo}</p>
+            <p><strong>Descripción:</strong> ${task.descripcion}</p>
+            ${task.estado === "Finalizada" ? `<p><strong>Fecha de conclusión:</strong> ${task.fechaConclusion || ''}</p>` : ''}
+        `;
+        this.taskDialog.showModal();
+    }
+
+    async updateTaskStatus(taskId, newStatus) {
+        const task = await this.api.fetchTaskById(taskId);
+        const updateData = { estado: newStatus };
+        if (newStatus === "Finalizada") {
+            updateData.fechaConclusion = new Date().toISOString();
+        } else if (task.estado === "Finalizada" && newStatus !== "Finalizada") {
+            updateData.fechaConclusion = "";
+        }
+
+        const response = await fetch(`${this.api.apiURL}/${taskId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(updateData)
+        });
+
+        if (response.ok) {
             this.loadTasks();
-        } catch (error) {
-            console.error("Error al actualizar el estado:", error);
+        } else {
+            console.error("Error al actualizar el estado:", await response.text());
         }
     }
 
@@ -123,7 +118,8 @@ class TaskController {
     addIconClickEvents() {
         const icons = this.container.querySelectorAll(".task-icon:not(.check-icon)");
         icons.forEach(icon => {
-            icon.addEventListener("click", () => {
+            icon.addEventListener("click", (event) => {
+                event.stopPropagation();
                 console.log("Botón de play presionado");
                 const description = icon.getAttribute("data-description");
                 this.speakTitle(description);
@@ -133,8 +129,12 @@ class TaskController {
 
     speakTitle(text) {
         if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
             const speech = new SpeechSynthesisUtterance(text);
-            speech.lang = "es-ES";
+            speech.lang = voiceSettings.lang; // Usar configuración global de idioma
+            speech.rate = voiceSettings.rate; // Usar configuración global de velocidad
+            speech.onstart = () => console.log("Iniciando síntesis de voz");
+            speech.onend = () => console.log("Finalizó síntesis de voz");
             window.speechSynthesis.speak(speech);
         } else {
             console.error("Speech Synthesis no está soportado en este navegador.");

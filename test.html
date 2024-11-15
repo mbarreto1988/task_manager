@@ -4,79 +4,70 @@
     <title>Siri</title>
 </head>
 <style>
-    * {
-        padding: 0px;
-        margin: 0px;
-        font-family: Century Gothic;
+   fieldset > * {
+    display: block;
+    margin-bottom: 1rem;
     }
 
-    body {
-        background-color: #ededed;
-    }
-
-    div {
-        padding: 30px;
-        background-color: #fff;
-        margin: 50px;
-    }
-
-    input {
-        padding: 9px;
-        font-size: 18px;
-        border: solid 1px #aaa;
-        width: 80%
-    }
-    input[type="button"] {
-        width: 15%
-    }
-    .decir-boton {
-        cursor: pointer;
+    select,
+    textarea,
+    button {
+    font-family: Jost, sans-serif;
+    font-size: 1.5rem;
     }
 </style>
 <body>
-    <div>
-        <input type="text" id="texto" placeholder="Escribe algo aquí">
-        <input type="button" id="hablar" value="Decir" class="decir-boton">
-    </div>
+    <fieldset>
+        <legend>Datos del mensaje de voz</legend>
+      
+        <select class="voice"></select>
+      
+        <label>Tono:
+          <input class="pitch" type="range" min="0" max="2" step="0.25" value="1">
+        </label>
+        <label>Velocidad:
+          <input class="rate" type="range" min="0" max="2" step="0.25" value="1">
+        </label>
+        <label>Volumen:
+          <input class="volume" type="range" min="0" max="1" step="0.1" value="1">
+        </label>
+      
+        <textarea cols="60" rows="3" placeholder="Aquí tu mensaje de texto"
+                  class="text">Hola. Aún no me sigues en mi canal de Twitch</textarea>
+      </fieldset>
+      
+      <button class="start">Hablar</button>
+      <button class="cancel">Cancelar</button>
 
     <a href="./index.html">ir a Index</a>
     <script>
-        let voices = [];
-        window.speechSynthesis.onvoiceschanged = () => {
-            voices = window.speechSynthesis.getVoices();
-            console.log("Voces cargadas:", voices);
-        };
-        
-        document.getElementById('hablar').addEventListener("click", () => {
-            const texto = document.getElementById("texto").value;
-            console.log("Texto a decir:", texto); 
-            decir(texto);
-        });
-    
-        function decir(texto) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                
-                const speech = new SpeechSynthesisUtterance(texto);
-                speech.lang = "es-ES";
-                speech.volume = 1; 
-                speech.rate = 1;  
-                speech.pitch = 1; 
-                
-                const spanishVoice = voices.find(voice => voice.lang === "es-ES" || voice.lang === "es_ES");
-                if (spanishVoice) {
-                    speech.voice = spanishVoice;
-                    console.log("Usando voz:", spanishVoice);
-                }
-                
-                if (!window.speechSynthesis.speaking) {
-                    window.speechSynthesis.speak(speech);
-                }
-            } else {
-                console.error("Speech Synthesis no está soportado en este navegador.");
-            }
-        }
+        const voiceOptions = document.querySelector(".voice");
+const startButton = document.querySelector(".start");
+const cancelButton = document.querySelector(".cancel");
+const pitchInput = document.querySelector(".pitch");
+const rateInput = document.querySelector(".rate");
+const volumeInput = document.querySelector(".volume");
 
+speechSynthesis.addEventListener("voiceschanged", () => {
+  const voices = speechSynthesis.getVoices();
+  const options = voices.map((voice, index) => {
+    return `<option value="${index}">${voice.name}</option>`;
+  });
+  voiceOptions.innerHTML = options.join("");
+});
+
+startButton.addEventListener("click", () => {
+  const text = document.querySelector(".text").value;
+  const message = new SpeechSynthesisUtterance(text);
+  const index = voiceOptions.selectedIndex;
+  message.voice = speechSynthesis.getVoices()[index];
+  message.pitch = pitchInput.value;
+  message.rate = rateInput.value;
+  message.volume = volumeInput.value;
+  speechSynthesis.speak(message);
+});
+
+cancelButton.addEventListener("click", () => speechSynthesis.cancel());
     </script>
     
 </body>

@@ -277,6 +277,14 @@ input[type="checkbox"]:checked ~ .task-section .fullscreen-menu {
     border-radius: 1px;
 }
 
+/*----------------------------------------- dialog cerrar */
+
+
+#closeTaskDialogButton{
+    align-items: center;
+    text-align: center;
+}
+
 /*----------------------------------------- footer */
 footer {
     text-align: center;
