@@ -4,6 +4,18 @@ class TaskController {
     constructor(container) {
         this.container = container;
         this.api = new Api(); // Instancia de la clase Api
+
+        // Inicializar la API de síntesis de voz en un evento de interacción, si es posible
+        window.addEventListener('click', () => {
+            this.initializeSpeech();
+        }, { once: true });
+    }
+
+    initializeSpeech() {
+        if ('speechSynthesis' in window) {
+            const initSpeech = new SpeechSynthesisUtterance('');
+            window.speechSynthesis.speak(initSpeech);
+        }
     }
 
     async loadTasks() {
@@ -63,7 +75,7 @@ class TaskController {
                         <p class="date task-date">${task.fechaCreacion}</p>
                         <p class="date task-status">${task.estado}</p>
                     </div>
-                    <button class="icon task-icon ${iconClass}" data-description="${task.descripcion}">
+                    <button class="icon task-icon ${iconClass}" data-description="${task.descripcion}" id="button-play">
                         ${iconHtml}
                     </button>
                 </div>
@@ -112,6 +124,7 @@ class TaskController {
         const icons = this.container.querySelectorAll(".task-icon:not(.check-icon)");
         icons.forEach(icon => {
             icon.addEventListener("click", () => {
+                console.log("Botón de play presionado");
                 const description = icon.getAttribute("data-description");
                 this.speakTitle(description);
             });

@@ -270,6 +270,13 @@ input[type="checkbox"]:checked ~ .task-section .fullscreen-menu {
     color: #999;
 }
 
+
+
+.fa-solid:hover{
+    background-color: rgb(240, 226, 73);
+    border-radius: 1px;
+}
+
 /*----------------------------------------- footer */
 footer {
     text-align: center;
