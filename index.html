@@ -1,136 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Task Management </title>
-    <link rel="stylesheet" href="./public/css/style.css">
-    <script defer type="module" src="./public/js/main.js"></script>
-    <script src="https://kit.fontawesome.com/a214269803.js" crossorigin="anonymous"></script>
-</head>
-<body>
-    <div class="container">
-        <header class="navbar">
-            <label for="check" class="menuButton" id="menuButtonId">
-                <input id="check" type="checkbox">
-                <span class="top"></span>
-                <span class="mid"></span>
-                <span class="bot"></span>
-            </label>
-            <a  href="/" class="titulo">Task Manag</a>
-        </header>
-        
-        <main>
-            <div class="task-section">
-                <div class="task-container">
-                    <section id="api-data">
-                        <!-- Aquí se inyectan las tareas -->
-                    </section>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title> Task Management </title>
+        <link rel="stylesheet" href="./public/css/style.css">
+        <script src="https://kit.fontawesome.com/a214269803.js" crossorigin="anonymous"></script>
+        <script defer type="module" src="./public/js/main.js"></script>
+    </head>
+    <body>
+        <div class="container">
+
+            <header class="navbar">
+                <label for="check" class="menuButton" id="menuButtonId">
+                    <input id="check" type="checkbox">
+                    <span class="top"></span>
+                    <span class="mid"></span>
+                    <span class="bot"></span>
+                </label>
+                <a  href="/" class="titulo">Task Manag</a>
+            </header>
+            
+            <main>
+                <div class="task-section">
+                    <div class="task-container">
+                        <section id="api-data">
+                            <!-- Aquí se inyectan las tareas -->
+                        </section>
+                    </div>                    
+                    <div class="fullscreen-menu" id="fullscreenMenu">
+                        <ul>
+                            <li><a href="#" id="newNote">Crear una nueva Nota</a></li>
+                            <li><a href="#" id="changeStatus">Cambiar estado de la aplicación</a></li>
+                            <li><a href="#" id="deleteTask">Eliminar una tarea</a></li>
+                            <li><a href="#" id="configureApp">Configurar bases de la aplicación</a></li>
+                        </ul>
+                    </div>
+
+                    <dialog id="newNoteDialog" class="task-dialog">
+                        <div class="dialog-header">
+                            <h2>Nueva</h2>
+                            <button id="closeDialogButton">✖</button>
+                        </div>
+                        <form id="newNoteForm">
+                            <input type="text" id="taskTitle" placeholder="Título de la tarea" required>
+                            <textarea id="taskDetails" placeholder="Detalle de la tarea" rows="5"></textarea>
+                            <select id="taskStatus" required>
+                                <option value="" disabled selected>Estado de la tarea</option>
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="En Proceso">En Proceso</option>
+                                <option value="Finalizada">Finalizada</option>
+                            </select>
+                            <div class="button-group">
+                                <button type="submit">Guardar</button>
+                                <button type="button" id="cancelDialogButton">Cancelar</button>
+                            </div>
+                        </form>
+                    </dialog>
+                    
+                    <dialog id="changeStatusDialog" class="task-dialog">
+                        <div class="dialog-header">
+                            <h2>Cambiar estado de la tarea</h2>
+                            <button id="closeChangeStatusDialogButton">✖</button>
+                        </div>
+                        <form id="changeStatusForm">
+                            <select id="selectTask" required>
+                                <option value="" disabled selected>Selecciona una tarea</option>
+                            </select>
+                            <select id="newTaskStatus" required>
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="En Proceso">En Proceso</option>
+                                <option value="Finalizada">Finalizada</option>
+                            </select>
+                            <div class="button-group">
+                                <button type="submit">Guardar</button>
+                                <button type="button" id="cancelChangeStatusButton">Cancelar</button>
+                            </div>
+                        </form>
+                    </dialog>
+
+                    <dialog id="deleteTaskDialog" class="task-dialog">
+                        <div class="dialog-header">
+                            <h2>Eliminar Tarea</h2>
+                            <button id="closeDeleteTaskDialogButton">✖</button>
+                        </div>
+                        <form id="deleteTaskForm">
+                            <select id="deleteTaskDropdown" required>
+                                <option value="" disabled selected>Selecciona una tarea</option>
+                            </select>
+                            <div class="button-group">
+                                <button type="submit">Eliminar</button>
+                                <button type="button" id="cancelDeleteTaskButton">Cancelar</button>
+                            </div>
+                        </form>
+                    </dialog>
+
+                    <dialog id="taskDialog" class="task-dialog">
+                        <div id="taskDialogContent"></div>
+                        <button id="closeTaskDialogButton">Cerrar</button>
+                    </dialog>
+                    
+                    <dialog id="configureVoiceDialog" class="task-dialog">
+                        <h2>Configurar Voz</h2>
+                        <textarea id="voiceTextToSpeak" placeholder="Escribe el texto que quieres que se hable"></textarea>
+                        <p id="labelInputRate">Velocidad de reproducción: 1</p>
+                        <input type="range" id="voiceInputRate" min="0.5" max="2" value="1" step="0.1">
+                        <select id="voiceSelectVoice">
+                            <option value="es-MX">Español México</option>
+                            <option value="es-US">Español USA</option>
+                            <option value="en-GB">Inglés británico</option>
+                            <option value="en-US">Inglés norteamericano</option>
+                            <option value="it-IT">Italiano</option>
+                            <option value="pt-BR">Portugués de Brasil</option>
+                            <option value="fr-FR">Francés</option>
+                        </select>
+                        <button id="playConfiguredVoice">Escuchar</button>
+                        <button id="closeConfigureVoiceDialog">Cerrar</button>
+                    </dialog>
                 </div>
-                
-                <div class="fullscreen-menu" id="fullscreenMenu">
-                    <ul>
-                        <li><a href="#" id="newNote">Crear una nueva Nota</a></li>
-                        <li><a href="#" id="changeStatus">Cambiar estado de la aplicación</a></li>
-                        <li><a href="#" id="deleteTask">Eliminar una tarea</a></li>
-                        <li><a href="#" id="configureApp">Configurar bases de la aplicación</a></li>
-                    </ul>
-                </div>
+            </main>
 
-                <dialog id="newNoteDialog" class="task-dialog">
-                    <div class="dialog-header">
-                        <h2>Nueva</h2>
-                        <button id="closeDialogButton">✖</button>
-                    </div>
-                    <form id="newNoteForm">
-                        <input type="text" id="taskTitle" placeholder="Título de la tarea" required>
-                        <textarea id="taskDetails" placeholder="Detalle de la tarea" rows="5"></textarea>
-                        <select id="taskStatus" required>
-                            <option value="" disabled selected>Estado de la tarea</option>
-                            <option value="Pendiente">Pendiente</option>
-                            <option value="En Proceso">En Proceso</option>
-                            <option value="Finalizada">Finalizada</option>
-                        </select>
-                        <div class="button-group">
-                            <button type="submit">Guardar</button>
-                            <button type="button" id="cancelDialogButton">Cancelar</button>
-                        </div>
-                    </form>
-                </dialog>
+            <footer>
+                <h2>Footer todos los derechos reservados MB</h2>
+            </footer>
 
-                <!-- Diálogo para cambiar el estado de una tarea existente -->
-                <dialog id="changeStatusDialog" class="task-dialog">
-                    <div class="dialog-header">
-                        <h2>Cambiar estado de la tarea</h2>
-                        <button id="closeChangeStatusDialogButton">✖</button>
-                    </div>
-                    <form id="changeStatusForm">
-                        <!-- Lista desplegable de tareas -->
-                        <select id="selectTask" required>
-                            <option value="" disabled selected>Selecciona una tarea</option>
-                            <!-- Las tareas se inyectarán aquí desde JavaScript -->
-                        </select>
+        </div>
 
-                        <!-- Selección de nuevo estado -->
-                        <select id="newTaskStatus" required>
-                            <option value="Pendiente">Pendiente</option>
-                            <option value="En Proceso">En Proceso</option>
-                            <option value="Finalizada">Finalizada</option>
-                        </select>
-
-                        <div class="button-group">
-                            <button type="submit">Guardar</button>
-                            <button type="button" id="cancelChangeStatusButton">Cancelar</button>
-                        </div>
-                    </form>
-                </dialog>
-
-                <dialog id="deleteTaskDialog" class="task-dialog">
-                    <div class="dialog-header">
-                        <h2>Eliminar Tarea</h2>
-                        <button id="closeDeleteTaskDialogButton">✖</button>
-                    </div>
-                    <form id="deleteTaskForm">
-                        <select id="deleteTaskDropdown" required>
-                            <option value="" disabled selected>Selecciona una tarea</option>
-                        </select>
-                        <div class="button-group">
-                            <button type="submit">Eliminar</button>
-                            <button type="button" id="cancelDeleteTaskButton">Cancelar</button>
-                        </div>
-                    </form>
-                </dialog>
-
-                <dialog id="taskDialog" class="task-dialog">
-                    <div id="taskDialogContent"></div>
-                    <button id="closeTaskDialogButton">Cerrar</button>
-                </dialog>
-                
-                <dialog id="configureVoiceDialog" class="task-dialog">
-                    <h2>Configurar Voz</h2>
-                    <textarea id="voiceTextToSpeak" placeholder="Escribe el texto que quieres que se hable"></textarea>
-                    <p id="labelInputRate">Velocidad de reproducción: 1</p>
-                    <input type="range" id="voiceInputRate" min="0.5" max="2" value="1" step="0.1">
-                    <select id="voiceSelectVoice">
-                        <option value="es-MX">Español México</option>
-                        <option value="es-US">Español USA</option>
-                        <option value="en-GB">Inglés británico</option>
-                        <option value="en-US">Inglés norteamericano</option>
-                        <option value="it-IT">Italiano</option>
-                        <option value="pt-BR">Portugués de Brasil</option>
-                        <option value="fr-FR">Francés</option>
-                    </select>
-                    <button id="playConfiguredVoice">Escuchar</button>
-                    <button id="closeConfigureVoiceDialog">Cerrar</button>
-                </dialog>
-
-            </div>
-        </main>
-
-        <footer>
-            <h2>Footer todos los derechos reservados</h2>
-        </footer>
-    </div>
-
-</body>
+    </body>
 </html>

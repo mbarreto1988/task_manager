@@ -1,9 +1,8 @@
-// Api.js
-
 class Api {
     constructor() {
         this.apiURL = "https://6708314d8e86a8d9e42e50e1.mockapi.io/tasks";
     }
+
 
     async fetchTasks() {
         try {
@@ -16,6 +15,7 @@ class Api {
         }
     }
 
+
     async createTask(task) {
         try {
             const response = await fetch(this.apiURL, {
@@ -26,18 +26,18 @@ class Api {
                 body: JSON.stringify(task)
             });
             if (!response.ok) throw new Error("Error al crear la tarea");
-            return await response.json(); // Retorna la tarea creada
+            return await response.json();
         } catch (error) {
             console.error("Error al crear la tarea:", error);
             return null;
         }
     }
 
+
     async fetchTaskById(taskId) {
         const response = await fetch(`${this.apiURL}/${taskId}`);
         return response.ok ? response.json() : null;
-    }
-    
+    }    
 }
 
 export default Api;

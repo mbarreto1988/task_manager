@@ -1,5 +1,6 @@
 import Api from './api.js';
-import { voiceSettings } from './voiceConfig.js'; // Importamos las configuraciones globales
+import { voiceSettings } from './voiceConfig.js';
+
 
 class TaskController {
     constructor(container) {
@@ -9,11 +10,13 @@ class TaskController {
         this.taskDialogContent = document.getElementById("taskDialogContent");
     }
 
+
     async loadTasks() {
         const tasks = await this.api.fetchTasks();
         this.displayTasks(tasks);
         return tasks;
     }
+
 
     async createTask(task) {
         const newTask = await this.api.createTask(task);
@@ -21,6 +24,7 @@ class TaskController {
             this.loadTasks();
         }
     }
+
 
     displayTasks(tasks) {
         const orderedTasks = tasks.sort((a, b) => {
@@ -32,10 +36,15 @@ class TaskController {
             const fechaB = new Date(b.fechaCreacion);
             return fechaB - fechaA;
         });
-
         this.container.innerHTML = "";
-
         orderedTasks.forEach(task => {
+
+            const iconHtml = task.estado === "Finalizada"
+                ? '<i class="fa-solid fa-circle-check"></i>'
+                : '<i class="fa-solid fa-circle-play"></i>';
+            
+            const iconClass = task.estado === "Finalizada" ? "check-icon" : "play-icon";
+
             const taskHtml = `
                 <div class="task ${task.estado === "Finalizada" ? "completed" : ""}" data-id="${task.id}">
                     <div>
@@ -43,17 +52,17 @@ class TaskController {
                         <p class="date task-date">${task.fechaCreacion}</p>
                         <p class="date task-status">${task.estado}</p>
                     </div>
-                    <button class="icon task-icon play-icon" data-description="${task.descripcion}">
-                        <i class="fa-solid fa-circle-play"></i>
+                    <button class="icon task-icon ${iconClass}" data-description="${task.descripcion}">
+                        ${iconHtml}
                     </button>
                 </div>
             `;
             this.container.insertAdjacentHTML("beforeend", taskHtml);
         });
-
         this.addTaskClickEvents();
         this.addIconClickEvents();
     }
+
 
     addTaskClickEvents() {
         const tasks = this.container.querySelectorAll(".task");
@@ -66,6 +75,7 @@ class TaskController {
         });
     }
 
+
     showTaskDialog(task) {
         this.taskDialogContent.innerHTML = `
             <p><strong>Fecha de creación:</strong> ${task.fechaCreacion}</p>
@@ -76,6 +86,7 @@ class TaskController {
         this.taskDialog.showModal();
     }
 
+
     async updateTaskStatus(taskId, newStatus) {
         const task = await this.api.fetchTaskById(taskId);
         const updateData = { estado: newStatus };
@@ -84,7 +95,6 @@ class TaskController {
         } else if (task.estado === "Finalizada" && newStatus !== "Finalizada") {
             updateData.fechaConclusion = "";
         }
-
         const response = await fetch(`${this.api.apiURL}/${taskId}`, {
             method: "PUT",
             headers: {
@@ -92,13 +102,13 @@ class TaskController {
             },
             body: JSON.stringify(updateData)
         });
-
         if (response.ok) {
             this.loadTasks();
         } else {
             console.error("Error al actualizar el estado:", await response.text());
         }
     }
+
 
     async deleteTask(taskId) {
         try {
@@ -115,6 +125,7 @@ class TaskController {
         }
     }
 
+
     addIconClickEvents() {
         const icons = this.container.querySelectorAll(".task-icon:not(.check-icon)");
         icons.forEach(icon => {
@@ -127,12 +138,13 @@ class TaskController {
         });
     }
 
+
     speakTitle(text) {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
             const speech = new SpeechSynthesisUtterance(text);
-            speech.lang = voiceSettings.lang; // Usar configuración global de idioma
-            speech.rate = voiceSettings.rate; // Usar configuración global de velocidad
+            speech.lang = voiceSettings.lang;
+            speech.rate = voiceSettings.rate;
             speech.onstart = () => console.log("Iniciando síntesis de voz");
             speech.onend = () => console.log("Finalizó síntesis de voz");
             window.speechSynthesis.speak(speech);
@@ -141,5 +153,6 @@ class TaskController {
         }
     }
 }
+
 
 export default TaskController;

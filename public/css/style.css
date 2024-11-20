@@ -10,18 +10,18 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #f3f3f3;
+    background-color: #edbebe;
 }
 
 .container {
     width: 300px;
-    max-height: 80vh; /* Limita la altura máxima al 80% de la pantalla */
+    max-height: 80vh;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     padding: 20px;
     display: flex;
-    flex-direction: column; /* Para que los elementos internos se organicen en columna */
+    flex-direction: column;
 }
 
 
@@ -216,12 +216,12 @@ input[type="checkbox"]:checked ~ .task-section .fullscreen-menu {
 }
 
 .task-container {
-    flex: 1; /* Ocupa todo el espacio disponible dentro del .container */
-    overflow-y: auto; /* Activa el scroll solo en este contenedor */
+    flex: 1;
+    overflow-y: auto;
     padding-right: 10px;
-    scrollbar-color: rgb(64, 172, 240) rgb(131, 243, 194); /* Color de la barra de desplazamiento */
+    scrollbar-color: rgb(64, 172, 240) rgb(131, 243, 194);
     scrollbar-width: thin;
-    max-height: calc(70vh - 100px); /* Ajusta esta altura según el espacio que ocupen el header y el footer */
+    max-height: calc(70vh - 100px);
 }
 
 .task-container::-webkit-scrollbar-thumb {
@@ -302,7 +302,7 @@ footer h2 {
 }
 
 .navbar, footer {
-    flex-shrink: 0; /* No se colapsan */
+    flex-shrink: 0;
 }
 
 
@@ -311,7 +311,7 @@ footer h2 {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 90%; /* Ajusta el tamaño según sea necesario */
+    width: 90%; 
     max-width: 280px;
     padding: 20px;
     border-radius: 8px;
@@ -343,8 +343,8 @@ footer h2 {
 
 .button-group {
     display: flex;
-    justify-content: center; /* Centra los botones horizontalmente */
-    gap: 10px; /* Espacio entre los botones */
+    justify-content: center;
+    gap: 10px;
     margin-top: 10px;
 }
 
@@ -353,7 +353,7 @@ footer h2 {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    min-width: 80px; /* Ajusta según el tamaño deseado */
+    min-width: 80px; 
 }
 
 .button-group button[type="submit"] {
@@ -391,4 +391,16 @@ footer h2 {
 #cancelDialogButton {
     background-color: #f44336;
     color: white;
+}
+
+
+@media (min-width: 1024px) {
+    .container {
+        width: 60%; /* Ajusta al 80% del ancho de la pantalla */
+    }
+
+    .task-dialog {
+        width: 50%; /* Hacer que ocupe el 60% del ancho de la pantalla */
+        max-width: none; /* Quitar la restricción del ancho máximo */
+    }
 }
